@@ -1,5 +1,10 @@
-import Image from "next/image";
-
+import AirdropForm from "@/components/AirdropForm";
+import Chart from "@/components/Chart";
 export default function Home() {
-  return <div>HI from Main Page</div>;
+  return (
+    <div>
+      <AirdropForm />
+      <Chart />
+    </div>
+  );
 }
