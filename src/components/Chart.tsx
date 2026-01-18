@@ -14,15 +14,14 @@ import type {
 // BINANCE API CONFIGURATION
 // ============================================
 
-const SYMBOL = "BTCUSDT";
+//const SYMBOL = "BTCUSDT";
 const LIMIT = 500;
 
-const getRestUrl = (interval: string) =>
-  `https://api.binance.com/api/v3/klines?symbol=${SYMBOL}&interval=${interval}&limit=${LIMIT}`;
+const getRestUrl = (interval: string, symbol: string) =>
+  `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${LIMIT}`;
 
-const getWsUrl = (interval: string) =>
-  `wss://stream.binance.com:9443/ws/${SYMBOL.toLowerCase()}@kline_${interval}`;
-
+const getWsUrl = (interval: string, symbol: string) =>
+  `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@kline_${interval}`;
 // Binance kline format: [openTime, open, high, low, close, volume, closeTime, ...]
 type BinanceKline = [
   number,
@@ -48,8 +47,11 @@ interface BinanceWsMessage {
   };
 }
 
-async function fetchHistory(interval: string): Promise<CandlestickData[]> {
-  const response = await fetch(getRestUrl(interval));
+async function fetchHistory(
+  interval: string,
+  symbol: string,
+): Promise<CandlestickData[]> {
+  const response = await fetch(getRestUrl(interval, symbol));
   const klines: BinanceKline[] = await response.json();
 
   return klines.map((k) => ({
@@ -62,7 +64,9 @@ async function fetchHistory(interval: string): Promise<CandlestickData[]> {
 }
 
 const INTERVALS = ["15m", "1h", "2h", "4h", "1d", "1w", "1M"] as const;
+const SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT"] as const;
 type IntervalType = (typeof INTERVALS)[number];
+type SymbolType = (typeof SYMBOLS)[number];
 
 export default function Chart() {
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -71,6 +75,7 @@ export default function Chart() {
   const wsRef = useRef<WebSocket | null>(null);
 
   const [selectedInterval, setSelectedInterval] = useState<IntervalType>("1h");
+  const [selectedSymbol, setSelectedSymbol] = useState<SymbolType>("ETHUSDT");
 
   // Create chart once on mount
   useEffect(() => {
@@ -131,7 +136,7 @@ export default function Chart() {
       // Close existing connection
       wsRef.current?.close();
 
-      const ws = new WebSocket(getWsUrl(selectedInterval));
+      const ws = new WebSocket(getWsUrl(selectedInterval, selectedSymbol));
       wsRef.current = ws;
 
       ws.onopen = () =>
@@ -165,7 +170,7 @@ export default function Chart() {
       if (isDisposed) return;
 
       console.log(`Fetching historical data for ${selectedInterval}...`);
-      const history = await fetchHistory(selectedInterval);
+      const history = await fetchHistory(selectedInterval, selectedSymbol);
 
       if (isDisposed) return;
 
@@ -183,7 +188,7 @@ export default function Chart() {
       wsRef.current?.close();
       wsRef.current = null;
     };
-  }, [selectedInterval]);
+  }, [selectedInterval, selectedSymbol]);
 
   return (
     <div
@@ -201,8 +206,15 @@ export default function Chart() {
           top: "10px",
           left: "10px",
           zIndex: 10,
+          display: "flex",
+          gap: "8px",
         }}
       >
+        <DropDownButton
+          options={SYMBOLS}
+          selectedOption={selectedSymbol}
+          onOptionChange={setSelectedSymbol}
+        />
         <DropDownButton
           options={INTERVALS}
           selectedOption={selectedInterval}
