@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import Header from "@/components/Header";
+import Spinner from "@/components/Spinner";
+import SideNavigation from "@/components/SideNavigation";
 
 export const metadata: Metadata = {
   title: "Perps.fun",
@@ -17,7 +19,10 @@ export default function RootLayout({
       <body>
         <Providers>
           <Header />
-          {children}
+          <div className="grid grid-cols-[16rem_1fr] h-full gap-12">
+            <SideNavigation />
+            <div className="py-1">{children}</div>
+          </div>
         </Providers>
       </body>
     </html>
@@ -30,3 +35,4 @@ export default function RootLayout({
 // npm i @wagmi/core
 
 // npm install lightweight-charts
+// npm install @heroicons/react
