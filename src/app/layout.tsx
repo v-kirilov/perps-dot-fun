@@ -4,7 +4,7 @@ import { Providers } from "./providers";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "TSender",
+  title: "Perps.fun",
 };
 
 export default function RootLayout({
