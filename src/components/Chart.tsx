@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createChart, CandlestickSeries, ColorType } from "lightweight-charts";
+import DropDownButton from "./ui/DropDownButton";
 import type {
   CandlestickData,
   UTCTimestamp,
@@ -14,11 +15,13 @@ import type {
 // ============================================
 
 const SYMBOL = "BTCUSDT";
-const INTERVAL = "1h";
 const LIMIT = 500;
 
-const REST_URL = `https://api.binance.com/api/v3/klines?symbol=${SYMBOL}&interval=${INTERVAL}&limit=${LIMIT}`;
-const WS_URL = `wss://stream.binance.com:9443/ws/${SYMBOL.toLowerCase()}@kline_${INTERVAL}`;
+const getRestUrl = (interval: string) =>
+  `https://api.binance.com/api/v3/klines?symbol=${SYMBOL}&interval=${interval}&limit=${LIMIT}`;
+
+const getWsUrl = (interval: string) =>
+  `wss://stream.binance.com:9443/ws/${SYMBOL.toLowerCase()}@kline_${interval}`;
 
 // Binance kline format: [openTime, open, high, low, close, volume, closeTime, ...]
 type BinanceKline = [
@@ -45,8 +48,8 @@ interface BinanceWsMessage {
   };
 }
 
-async function fetchHistory(): Promise<CandlestickData[]> {
-  const response = await fetch(REST_URL);
+async function fetchHistory(interval: string): Promise<CandlestickData[]> {
+  const response = await fetch(getRestUrl(interval));
   const klines: BinanceKline[] = await response.json();
 
   return klines.map((k) => ({
@@ -58,31 +61,20 @@ async function fetchHistory(): Promise<CandlestickData[]> {
   }));
 }
 
-const INTERVALS = ['15m', '1h', '2h', '4h', '1d', '1w', '1M'] as const;
-type IntervalType = typeof INTERVALS[number];
+const INTERVALS = ["15m", "1h", "2h", "4h", "1d", "1w", "1M"] as const;
+type IntervalType = (typeof INTERVALS)[number];
 
 export default function Chart() {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  
-  const [selectedInterval, setSelectedInterval] = useState<IntervalType>('1h');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleIntervalChange = (interval: IntervalType) => {
-    setSelectedInterval(interval);
-    setIsDropdownOpen(false);
-    // TODO: Reconnect WebSocket and fetch new data with new interval
-    console.log('Selected interval:', interval);
-  };
+  const [selectedInterval, setSelectedInterval] = useState<IntervalType>("1h");
 
+  // Create chart once on mount
   useEffect(() => {
     if (!chartContainerRef.current) return;
-
-    // ============================================
-    // 1. CREATE THE CHART
-    // ============================================
 
     const chart = createChart(chartContainerRef.current, {
       autoSize: true,
@@ -108,10 +100,6 @@ export default function Chart() {
 
     chartRef.current = chart;
 
-    // ============================================
-    // 2. ADD CANDLESTICK SERIES
-    // ============================================
-
     const candleSeries = chart.addSeries(CandlestickSeries, {
       upColor: "#26a69a",
       downColor: "#ef5350",
@@ -123,24 +111,35 @@ export default function Chart() {
 
     candleSeriesRef.current = candleSeries;
 
-    // ============================================
-    // 3. WEBSOCKET CONNECTION
-    // ============================================
+    return () => {
+      chartRef.current = null;
+      candleSeriesRef.current = null;
+      chart.remove();
+    };
+  }, []);
 
-    let reconnectTimeout: NodeJS.Timeout;
+  // Fetch data and connect WebSocket when interval changes
+  useEffect(() => {
+    if (!candleSeriesRef.current) return;
+
     let isDisposed = false;
+    let reconnectTimeout: NodeJS.Timeout;
 
     function connectWebSocket() {
       if (isDisposed) return;
-      
-      const ws = new WebSocket(WS_URL);
+
+      // Close existing connection
+      wsRef.current?.close();
+
+      const ws = new WebSocket(getWsUrl(selectedInterval));
       wsRef.current = ws;
 
-      ws.onopen = () => console.log("WebSocket connected");
+      ws.onopen = () =>
+        console.log(`WebSocket connected (${selectedInterval})`);
 
       ws.onmessage = (event) => {
         if (isDisposed) return;
-        
+
         const msg: BinanceWsMessage = JSON.parse(event.data);
         const k = msg.k;
 
@@ -162,86 +161,54 @@ export default function Chart() {
       ws.onerror = (error) => console.error("WebSocket error:", error);
     }
 
-    // ============================================
-    // 4. INITIALIZE
-    // ============================================
-
     async function init() {
       if (isDisposed) return;
-      
-      console.log("Fetching historical data...");
-      const history = await fetchHistory();
-      
+
+      console.log(`Fetching historical data for ${selectedInterval}...`);
+      const history = await fetchHistory(selectedInterval);
+
       if (isDisposed) return;
-      
-      candleSeries.setData(history);
+
+      candleSeriesRef.current?.setData(history);
       console.log(`Loaded ${history.length} candles`);
 
-      console.log("Connecting to WebSocket...");
       connectWebSocket();
     }
 
     init().catch(console.error);
-
-    // ============================================
-    // 5. CLEANUP ON UNMOUNT
-    // ============================================
 
     return () => {
       isDisposed = true;
       clearTimeout(reconnectTimeout);
       wsRef.current?.close();
       wsRef.current = null;
-      candleSeriesRef.current = null;
-      chartRef.current = null;
-      chart.remove();
     };
-  }, []);
+  }, [selectedInterval]);
 
-//   return (
-//       <div
-//         ref={chartContainerRef}
-//         style={{ width: "100%", height: "500px" }}
-//       ></div>
-//   );
-return (
-  <div style={{ position: 'relative', width: '100%', height: '500px' }}>
-    <div
-      ref={chartContainerRef}
-      style={{ width: '100%', height: '100%' }}
-    />
-    {/* Timeframe Dropdown */}
+  return (
     <div
       style={{
-        position: 'absolute',
-        top: '10px',
-        left: '10px',
-        zIndex: 10,
+        position: "relative",
+        width: "100%",
+        height: "500px",
+        marginTop: "20px",
       }}
     >
-      <button
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center gap-2"
+      <div ref={chartContainerRef} style={{ width: "100%", height: "100%" }} />
+      <div
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          zIndex: 10,
+        }}
       >
-        {selectedInterval}
-        <span className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}>▼</span>
-      </button>
-      {isDropdownOpen && (
-        <div className="absolute mt-1 bg-gray-800 border border-gray-700 rounded shadow-lg">
-          {INTERVALS.map((interval) => (
-            <button
-              key={interval}
-              onClick={() => handleIntervalChange(interval)}
-              className={`block w-full px-4 py-2 text-left hover:bg-gray-700 text-white ${
-                selectedInterval === interval ? 'bg-blue-600' : ''
-              }`}
-            >
-              {interval}
-            </button>
-          ))}
-        </div>
-      )}
+        <DropDownButton
+          options={INTERVALS}
+          selectedOption={selectedInterval}
+          onOptionChange={setSelectedInterval}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
 }
