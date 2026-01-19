@@ -19,7 +19,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <Header />
-          <div className="grid grid-cols-[16rem_1fr] h-full gap-12">
+          <div className="grid grid-cols-[16rem_1fr] min-h-[calc(100vh-64px)] gap-12">
             <SideNavigation />
             <div className="py-1">{children}</div>
           </div>
@@ -36,3 +36,5 @@ export default function RootLayout({
 
 // npm install lightweight-charts
 // npm install @heroicons/react
+// npm install @supabase/supabase-js
+

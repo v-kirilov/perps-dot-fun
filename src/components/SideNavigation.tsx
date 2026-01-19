@@ -48,7 +48,7 @@ function SideNavigation(): ReactNode {
   }, []);
 
   return (
-    <nav className="border-r border-primary-900">
+    <nav className="border-r border-primary-900 ">
       <ul className="flex flex-col gap-2 h-full text-lg">
         {navLinks.map((link) => {
           // Before mount, assume disconnected (matches server render)
