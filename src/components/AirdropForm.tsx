@@ -1,11 +1,7 @@
 "use client";
 import InputField from "./ui/InputField";
 import { useEffect, useMemo, useState } from "react";
-import {
-
-  storageAbi,
-  NUMBER_CONTRACT,
-} from "@/constants";
+import { storageAbi, NUMBER_CONTRACT } from "@/constants";
 import {
   useChainId,
   useConfig,
@@ -20,6 +16,7 @@ import {
 } from "@wagmi/core";
 import { calculateTotal } from "@/utils/calculateTotal/calculateTotal";
 import { CgSpinner } from "react-icons/cg";
+import Button from "./ui/Button";
 
 export default function AirdropForm() {
   const [tokenAddress, setTokenAddress] = useState("");
@@ -157,6 +154,12 @@ export default function AirdropForm() {
 
   return (
     <div>
+      <button
+        type="button"
+        className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+      >
+        Purple to Blue
+      </button>
       <InputField
         label="Number"
         placeholder="Set a number"
@@ -165,21 +168,30 @@ export default function AirdropForm() {
         large={false}
         onChange={(e) => setStorageNumber(Number(e.target.value))}
       />
-      <div className="flex gap-4 mt-4">
-        <button
-          onClick={handleGetNumber}
-          className="flex-1 mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-        >
-          Get number
-        </button>
+      <div className="flex mt-4">
+        <div className="flex-1 flex justify-center">
+          <Button
+            disabled={
+              !isMounted || !account.isConnected || !isApproved || !isMinted
+            }
+            onClick={handleGetNumber}
+            type="normal"
+          >
+            Get number
+          </Button>
+        </div>
 
-        <button
-          disabled={!isMounted || !account.isConnected || !isApproved || !isMinted}
-          onClick={() => handleSetNumberAsync()}
-          className="flex-1 mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:bg-gray-500 disabled:cursor-not-allowed disabled:hover:bg-gray-500"
-        >
-          {getButtonContent()}
-        </button>
+        <div className="flex-1 flex justify-center">
+          <Button
+            disabled={
+              !isMounted || !account.isConnected || !isApproved || !isMinted
+            }
+            onClick={handleSetNumberAsync}
+            type="big"
+          >
+            {getButtonContent()}
+          </Button>
+        </div>
       </div>
     </div>
   );
