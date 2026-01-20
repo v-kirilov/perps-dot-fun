@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import Header from "@/components/Header";
 import Spinner from "@/components/Spinner";
 import SideNavigation from "@/components/SideNavigation";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Perps.fun",
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Toaster position="top-right" />
         <Providers>
           <Header />
           <div className="grid grid-cols-[16rem_1fr] min-h-[calc(100vh-64px)] gap-12">

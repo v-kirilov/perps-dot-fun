@@ -17,6 +17,8 @@ import {
 import { calculateTotal } from "@/utils/calculateTotal/calculateTotal";
 import { CgSpinner } from "react-icons/cg";
 import Button from "./ui/Button";
+import { ContractFunctionExecutionError } from "viem";
+import toast from "react-hot-toast";
 
 export default function AirdropForm() {
   const [tokenAddress, setTokenAddress] = useState("");
@@ -89,25 +91,39 @@ export default function AirdropForm() {
 
   async function handleSetNumberAsync() {
     // started approval
-    setIsApproved(false);
-    const approvalHash = await writeContractAsync({
-      abi: storageAbi,
-      address: NUMBER_CONTRACT as `0x${string}`,
-      functionName: "store",
-      args: [BigInt(storageNumber)],
-    });
-    console.log("approvalHash", approvalHash);
-    setIsApproved(true);
-    setIsMinted(false);
+    try {
+      setIsApproved(false);
+      const approvalHash = await writeContractAsync({
+        abi: storageAbi,
+        address: NUMBER_CONTRACT as `0x${string}`,
+        functionName: "store",
+        args: [BigInt(storageNumber)],
+      });
+      console.log("approvalHash", approvalHash);
+      setIsApproved(true);
+      setIsMinted(false);
 
-    // approval received
-    const approvalReceipt = await waitForTransactionReceipt(config, {
-      hash: approvalHash,
-    });
-    console.log("approvalReceipt", approvalReceipt);
-    // transaction mined
-    setIsApproved(true);
-    setIsMinted(true);
+      // approval received
+      const approvalReceipt = await waitForTransactionReceipt(config, {
+        hash: approvalHash,
+      });
+      console.log("approvalReceipt", approvalReceipt);
+      // transaction mined
+      setIsApproved(true);
+      setIsMinted(true);
+    } catch (error: any) {
+      console.error("Error setting number:", error);
+      
+      setIsApproved(true);
+      setIsMinted(true);
+
+      if (
+        error instanceof ContractFunctionExecutionError )
+       {
+        toast.error("Transaction was rejected by user");
+        console.log("Transaction was rejected by user");
+      }
+    }
   }
 
   function getButtonContent() {
