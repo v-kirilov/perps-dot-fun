@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface DropDownButtonProps<T extends string> {
   options: readonly T[];
@@ -14,6 +14,23 @@ export default function DropDownButton<T extends string>({
   onOptionChange,
 }: DropDownButtonProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleOptionClick = (option: T) => {
     onOptionChange(option);
@@ -21,10 +38,10 @@ export default function DropDownButton<T extends string>({
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center gap-2"
+        className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2  disabled:bg-gray-500 disabled:cursor-not-allowed disabled:hover:bg-gray-500"
       >
         {selectedOption}
         <span className={`transition-transform ${isOpen ? "rotate-180" : ""}`}>
@@ -32,7 +49,7 @@ export default function DropDownButton<T extends string>({
         </span>
       </button>
       {isOpen && (
-        <div className="absolute mt-1 bg-gray-800 border border-gray-700 rounded shadow-lg">
+        <div className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2  disabled:bg-gray-500 disabled:cursor-not-allowed disabled:hover:bg-gray-500">
           {options.map((option) => (
             <button
               key={option}
