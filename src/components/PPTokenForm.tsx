@@ -143,7 +143,7 @@ export default function PPTokenForm() {
         onChange={(e) => setUserAddress(e.target.value.toString())}
       />
       <div className="flex mt-4">
-        <div className="flex-1 flex justify-center">
+        <div className="flex justify-center ">
           <Button
             disabled={
               !isMounted || !account.isConnected || !isApproved || !isMinted
@@ -155,15 +155,37 @@ export default function PPTokenForm() {
           </Button>
         </div>
 
-        <div className="flex-1 flex justify-center">
+        <div className=" flex justify-center">
           <Button
             disabled={
               !isMounted || !account.isConnected || !isApproved || !isMinted
             }
             onClick={handleGetBalance}
-            type="big"
+            type="small"
           >
             {getButtonContent()}
+          </Button>
+        </div>
+        <div className="justify-center">
+          <Button
+            disabled={
+              !isMounted || !account.isConnected || !isApproved || !isMinted
+            }
+            onClick={handleGetBalance}
+            type="buy"
+          >
+            BUY
+          </Button>
+        </div>
+        <div className="justify-center">
+          <Button
+            disabled={
+              !isMounted || !account.isConnected || !isApproved || !isMinted
+            }
+            onClick={handleGetBalance}
+            type="sell"
+          >
+            SELL
           </Button>
         </div>
       </div>

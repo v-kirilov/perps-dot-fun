@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import DropDownButton from "./ui/DropDownButton";
 
 // ============================================
 // BINANCE ORDER BOOK CONFIGURATION
