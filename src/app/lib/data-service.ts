@@ -12,10 +12,12 @@ export interface User {
 
 export interface Trade {
   created_at: Date;
+  closed_at?: Date;
   id: string;
   trader_id: string;
   amount: number;
   isOpen: boolean;
+  profit: number;
 }
 
 export const getUsers = async function () {
@@ -35,7 +37,7 @@ export const getUsers = async function () {
 export const getTrades = async function () {
   const { data, error } = await supabase
     .from("trades")
-    .select("id, created_at,trader_id, amount, isOpen")
+    .select("id, created_at, closed_at, trader_id, amount, isOpen, profit")
     .overrideTypes<Trade[], { merge: false }>();
 
   if (error) {
@@ -49,7 +51,7 @@ export const getTrades = async function () {
 export async function getTrade(id: string) {
   const { data, error } = await supabase
     .from("trades")
-    .select("id, created_at,trader_id, amount, isOpen")
+    .select("id, created_at, closed_at, trader_id, amount, isOpen, profit")
     .eq("id", id)
     .overrideTypes<Trade[], { merge: false }>();
 
