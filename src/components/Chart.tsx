@@ -14,7 +14,6 @@ import type {
 // BINANCE API CONFIGURATION
 // ============================================
 
-//const SYMBOL = "BTCUSDT";
 const LIMIT = 500;
 
 const getRestUrl = (interval: string, symbol: string) =>
@@ -64,18 +63,25 @@ async function fetchHistory(
 }
 
 const INTERVALS = ["15m", "1h", "2h", "4h", "1d", "1w", "1M"] as const;
-const SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT"] as const;
 type IntervalType = (typeof INTERVALS)[number];
-type SymbolType = (typeof SYMBOLS)[number];
 
-export default function Chart() {
+interface ChartProps<T extends string> {
+  symbols: readonly T[];
+  selectedSymbol: T;
+  onSymbolChange: (symbol: T) => void;
+}
+
+export default function Chart<T extends string>({
+  symbols,
+  selectedSymbol,
+  onSymbolChange,
+}: ChartProps<T>) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
   const [selectedInterval, setSelectedInterval] = useState<IntervalType>("1h");
-  const [selectedSymbol, setSelectedSymbol] = useState<SymbolType>("ETHUSDT");
 
   // Create chart once on mount
   useEffect(() => {
@@ -195,8 +201,7 @@ export default function Chart() {
       style={{
         position: "relative",
         width: "100%",
-        height: "500px",
-        marginTop: "20px",
+        height: "100%",
       }}
     >
       <div ref={chartContainerRef} style={{ width: "100%", height: "100%" }} />
@@ -211,9 +216,9 @@ export default function Chart() {
         }}
       >
         <DropDownButton
-          options={SYMBOLS}
+          options={symbols}
           selectedOption={selectedSymbol}
-          onOptionChange={setSelectedSymbol}
+          onOptionChange={onSymbolChange}
         />
         <DropDownButton
           options={INTERVALS}
