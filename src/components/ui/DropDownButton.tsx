@@ -49,12 +49,12 @@ export default function DropDownButton<T extends string>({
         </span>
       </button>
       {isOpen && (
-        <div className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-2.5 text-center me-2 mb-2  disabled:bg-gray-500 disabled:cursor-not-allowed disabled:hover:bg-gray-500">
+        <div className="absolute top-full left-0 z-50 mt-1 min-w-full text-white bg-gradient-to-br from-purple-600 to-blue-500 font-medium rounded-lg text-sm px-2 py-2.5 shadow-lg">
           {options.map((option) => (
             <button
               key={option}
               onClick={() => handleOptionClick(option)}
-              className={`block w-full px-4 py-2 text-left hover:bg-gray-700 text-white ${
+              className={`block w-full px-4 py-2 text-left hover:bg-gray-700 text-white rounded ${
                 selectedOption === option ? "bg-blue-600" : ""
               }`}
             >
