@@ -1,23 +1,54 @@
-import { supabase } from "@/app/lib/supabase";
-import { User, Trade, getTrades } from "../app/lib/data-service";
+import { Trade, getTrades } from "../app/lib/data-service";
+import TradeRow from "./TradeRow";
 
 async function TradeList() {
-  console.log("Fetching users from Supabase...");
+  console.log("Fetching trades from Supabase...");
   const trades: Trade[] = await getTrades();
 
   if (!trades || trades.length === 0) {
-    return <div>No users found</div>;
+    return (
+      <div className="bg-[#131722] rounded-lg p-8 text-center text-gray-400">
+        No trades found
+      </div>
+    );
   }
 
   return (
-    <div>
-      Trades:
-      {trades.map((trade: Trade) => (
-        <div key={trade.id}>
-          {trade.id}
-          {trade.created_at.toString()}
-        </div>
-      ))}
+    <div className="bg-[#131722] rounded-lg overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#1f2943]">
+        <h2 className="text-lg font-semibold text-white">Recent Trades</h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-[#1a1f2e]">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Trade ID
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Opened
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Closed
+              </th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Amount
+              </th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Profit
+              </th>
+              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#1f2943]">
+            {trades.map((trade: Trade) => (
+              <TradeRow key={trade.id} trade={trade} />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
