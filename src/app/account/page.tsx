@@ -1,12 +1,12 @@
 import PPTokenForm from "@/components/PPTokenForm";
+import AccountGuard from "@/components/AccountGuard";
 
 export default function Page() {
   return (
     <div className="flex flex-col gap-10 mt-10 items-center">
-      <h2 className="text-3xl font-semibold">
-        Sign in to access your profile information.
-      </h2>
-      <PPTokenForm />
+      <AccountGuard>
+        <PPTokenForm />
+      </AccountGuard>
     </div>
   );
 }
