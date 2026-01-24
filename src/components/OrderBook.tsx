@@ -313,7 +313,7 @@ export default function OrderBook<T extends string>({
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-2 mt-2">
         <div className="flex justify-center w-full">
           <Button disabled={false} onClick={() => {}} type="buy">
             BUY
