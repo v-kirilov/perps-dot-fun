@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Chart from "@/components/Chart";
 import OrderBook from "@/components/OrderBook";
+import BuyMenu from "./BuyMenu";
 
 const SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT"] as const;
 export type SymbolType = (typeof SYMBOLS)[number];
@@ -25,6 +26,9 @@ export default function TradingDashboard() {
           selectedSymbol={selectedSymbol}
           onSymbolChange={setSelectedSymbol}
         />
+        <div>
+          <BuyMenu />
+        </div>
       </div>
     </div>
   );

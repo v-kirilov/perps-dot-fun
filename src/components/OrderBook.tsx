@@ -313,18 +313,7 @@ export default function OrderBook<T extends string>({
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-2 mt-2">
-        <div className="flex justify-center w-full">
-          <Button disabled={false} onClick={() => {}} type="buy">
-            BUY
-          </Button>
-        </div>
-        <div className="flex justify-center w-full">
-          <Button disabled={false} onClick={() => {}} type="sell">
-            SELL
-          </Button>
-        </div>
-      </div>
+
     </>
   );
 }
