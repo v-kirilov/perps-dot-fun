@@ -7,11 +7,9 @@ export default function Trades() {
   return (
     <div className="flex flex-col gap-10 mt-10 items-center">
       <div>
-        <AccountGuard>
-          <Suspense fallback={<Spinner />}>
+          <AccountGuard>
             <TradeList />
-          </Suspense>
-        </AccountGuard>
+          </AccountGuard>
       </div>
     </div>
   );
