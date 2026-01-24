@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Spinner from "@/components/Spinner";
 import SideNavigation from "@/components/SideNavigation";
 import { Toaster } from "react-hot-toast";
@@ -21,10 +22,11 @@ export default function RootLayout({
         <Toaster position="top-right" />
         <Providers>
           <Header />
-          <div className="grid grid-cols-[16rem_1fr] min-h-[calc(100vh-64px)] gap-12">
+          <div className="grid grid-cols-[16rem_1fr] min-h-[calc(100vh-64px)]">
             <SideNavigation />
             <div className="py-1">{children}</div>
           </div>
+          <Footer />
         </Providers>
       </body>
     </html>
