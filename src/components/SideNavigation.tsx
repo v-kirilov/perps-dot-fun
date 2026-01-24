@@ -1,6 +1,8 @@
 "use client";
 import {
+  ArrowsRightLeftIcon,
   CalendarDaysIcon,
+  ChartBarIcon,
   HomeIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
@@ -23,9 +25,15 @@ const navLinks: NavLink[] = [
     icon: <HomeIcon className="h-5 w-5 text-primary-600" />,
     requiresAuth: false,
   },
+    {
+    name: "Trade",
+    href: "/trade",
+    icon: <ChartBarIcon   className="h-5 w-5 text-primary-600" />,
+    requiresAuth: false,
+  },
   {
-    name: "Trades",
-    href: "/trades",
+    name: "Trade History",
+    href: "/trade-history",
     icon: <CalendarDaysIcon className="h-5 w-5 text-primary-600" />,
     requiresAuth: true,
   },
