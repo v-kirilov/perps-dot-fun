@@ -22,25 +22,25 @@ const navLinks: NavLink[] = [
   {
     name: "Home",
     href: "/",
-    icon: <HomeIcon className="h-5 w-5 text-primary-600" />,
+    icon: <HomeIcon className="h-5 w-5" />,
     requiresAuth: false,
   },
     {
     name: "Trade",
     href: "/trade",
-    icon: <ChartBarIcon   className="h-5 w-5 text-primary-600" />,
+    icon: <ChartBarIcon className="h-5 w-5" />,
     requiresAuth: false,
   },
   {
     name: "Trade History",
     href: "/trade-history",
-    icon: <CalendarDaysIcon className="h-5 w-5 text-primary-600" />,
+    icon: <CalendarDaysIcon className="h-5 w-5" />,
     requiresAuth: true,
   },
   {
     name: "Profile",
     href: "/account",
-    icon: <UserIcon className="h-5 w-5 text-primary-600" />,
+    icon: <UserIcon className="h-5 w-5" />,
     requiresAuth: true,
   },
 ];
@@ -66,22 +66,27 @@ function SideNavigation(): ReactNode {
             <li key={link.name}>
               {!isDisabled ? (
                 <Link
-                  className={`py-3 px-5 hover:bg-primary-900 hover:text-primary-100 transition-colors flex items-center gap-4 font-semibold text-primary-200 ${
-                    pathname === link.href ? "bg-primary-900" : ""
+                  className={`py-3 px-5 hover:bg-primary-900 hover:text-primary-100 transition-colors flex items-center gap-4 font-semibold ${
+                    pathname === link.href
+                      ? "bg-purple-500/20 text-white border-l-4 border-purple-500"
+                      : "text-primary-200"
                   }`}
                   href={link.href}
                 >
-                  {link.icon}
+                  <span className={pathname === link.href ? "text-white" : ""}>
+                    {link.icon}
+                  </span>
                   <span>{link.name}</span>
                 </Link>
               ) : (
-                <button
-                  disabled
-                  className="py-3 px-5 flex items-center gap-4 font-semibold text-primary-200 cursor-not-allowed opacity-50"
-                >
-                  {link.icon}
-                  <span>{link.name}</span>
-                </button>
+                <div></div>
+                // <button
+                //   disabled
+                //   className="py-3 px-5 flex items-center gap-4 font-semibold text-primary-200 cursor-not-allowed opacity-50"
+                // >
+                //   {link.icon}
+                //   <span>{link.name}</span>
+                // </button>
               )}
             </li>
           );
