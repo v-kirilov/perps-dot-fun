@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Button from "./ui/Button";
 
 // ============================================
 // BINANCE ORDER BOOK CONFIGURATION
@@ -44,7 +45,7 @@ interface BinanceDepthUpdate {
 
 function processOrders(
   orders: [string, string][],
-  isAsk: boolean
+  isAsk: boolean,
 ): OrderBookEntry[] {
   const processed = orders
     .map(([price, quantity]) => ({
@@ -58,7 +59,7 @@ function processOrders(
   return processed.sort((a, b) =>
     isAsk
       ? parseFloat(a.price) - parseFloat(b.price)
-      : parseFloat(b.price) - parseFloat(a.price)
+      : parseFloat(b.price) - parseFloat(a.price),
   );
 }
 
@@ -110,11 +111,11 @@ export default function OrderBook<T extends string>({
     function updateOrderBook() {
       const bids = processOrders(
         Array.from(orderBookRef.current.entries()),
-        false
+        false,
       ).slice(0, DEPTH_LIMIT);
       const asks = processOrders(
         Array.from(asksRef.current.entries()),
-        true
+        true,
       ).slice(0, DEPTH_LIMIT);
 
       // Calculate spread
@@ -137,7 +138,8 @@ export default function OrderBook<T extends string>({
       const ws = new WebSocket(getWsUrl(selectedSymbol));
       wsRef.current = ws;
 
-      ws.onopen = () => console.log(`OrderBook WebSocket connected (${selectedSymbol})`);
+      ws.onopen = () =>
+        console.log(`OrderBook WebSocket connected (${selectedSymbol})`);
 
       ws.onmessage = (event) => {
         if (isDisposed) return;
@@ -171,7 +173,8 @@ export default function OrderBook<T extends string>({
         reconnectTimeout = setTimeout(connectWebSocket, 1000);
       };
 
-      ws.onerror = (error) => console.error("OrderBook WebSocket error:", error);
+      ws.onerror = (error) =>
+        console.error("OrderBook WebSocket error:", error);
     }
 
     async function init() {
@@ -194,7 +197,10 @@ export default function OrderBook<T extends string>({
         asksRef.current.set(price, quantity);
       }
 
-      setOrderBook((prev) => ({ ...prev, lastUpdateId: snapshot.lastUpdateId }));
+      setOrderBook((prev) => ({
+        ...prev,
+        lastUpdateId: snapshot.lastUpdateId,
+      }));
       updateOrderBook();
 
       connectWebSocket();
@@ -214,98 +220,111 @@ export default function OrderBook<T extends string>({
   const maxAskTotal = Math.max(...orderBook.asks.map((a) => a.total), 1);
 
   return (
-    <div className="bg-[#131722] rounded-lg p-4 text-[#d1d4dc] w-full h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Order Book</h2>
-      
-      </div>
+    <>
+      <div className="bg-[#131722] rounded-lg p-4 text-[#d1d4dc] w-full ">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Order Book</h2>
+        </div>
 
-      {/* Column Headers */}
-      <div className="grid grid-cols-3 text-xs text-gray-500 mb-2 px-2">
-        <span>Price</span>
-        <span className="text-right">Amount</span>
-        <span className="text-right">Total</span>
-      </div>
+        {/* Column Headers */}
+        <div className="grid grid-cols-3 text-xs text-gray-500 mb-2 px-2">
+          <span>Price</span>
+          <span className="text-right">Amount</span>
+          <span className="text-right">Total</span>
+        </div>
 
-      {/* Asks (Sells) - reversed to show lowest ask at bottom */}
-      <div className="space-y-[2px] mb-2">
-        {orderBook.asks
-          .slice(0, 10)
-          .reverse()
-          .map((ask, index) => (
+        {/* Asks (Sells) - reversed to show lowest ask at bottom */}
+        <div className="space-y-[2px] mb-2">
+          {orderBook.asks
+            .slice(0, 10)
+            .reverse()
+            .map((ask, index) => (
+              <div
+                key={`ask-${index}`}
+                className="grid grid-cols-3 text-xs px-2 py-[2px] relative"
+              >
+                <div
+                  className="absolute inset-0 bg-red-500/20"
+                  style={{
+                    width: `${(ask.total / maxAskTotal) * 100}%`,
+                    right: 0,
+                    left: "auto",
+                  }}
+                />
+                <span className="text-red-400 relative z-10">
+                  {formatPrice(ask.price)}
+                </span>
+                <span className="text-right relative z-10">
+                  {formatQuantity(ask.quantity)}
+                </span>
+                <span className="text-right relative z-10">
+                  {ask.total.toFixed(2)}
+                </span>
+              </div>
+            ))}
+        </div>
+
+        {/* Spread */}
+        <div className="flex items-center justify-center py-2 border-y border-[#1f2943] my-2">
+          <span className="text-sm font-medium">
+            {orderBook.bids[0] && (
+              <span className="text-white">
+                {formatPrice(
+                  (
+                    (parseFloat(orderBook.asks[0]?.price || "0") +
+                      parseFloat(orderBook.bids[0]?.price || "0")) /
+                    2
+                  ).toString(),
+                )}
+              </span>
+            )}
+          </span>
+          <span className="text-xs text-gray-500 ml-2">
+            Spread: {spread.value.toFixed(2)} ({spread.percentage.toFixed(3)}%)
+          </span>
+        </div>
+
+        {/* Bids (Buys) */}
+        <div className="space-y-[2px] mt-2">
+          {orderBook.bids.slice(0, 10).map((bid, index) => (
             <div
-              key={`ask-${index}`}
+              key={`bid-${index}`}
               className="grid grid-cols-3 text-xs px-2 py-[2px] relative"
             >
               <div
-                className="absolute inset-0 bg-red-500/20"
+                className="absolute inset-0 bg-green-500/20"
                 style={{
-                  width: `${(ask.total / maxAskTotal) * 100}%`,
+                  width: `${(bid.total / maxBidTotal) * 100}%`,
                   right: 0,
                   left: "auto",
                 }}
               />
-              <span className="text-red-400 relative z-10">
-                {formatPrice(ask.price)}
+              <span className="text-green-400 relative z-10">
+                {formatPrice(bid.price)}
               </span>
               <span className="text-right relative z-10">
-                {formatQuantity(ask.quantity)}
+                {formatQuantity(bid.quantity)}
               </span>
               <span className="text-right relative z-10">
-                {ask.total.toFixed(2)}
+                {bid.total.toFixed(2)}
               </span>
             </div>
           ))}
+        </div>
       </div>
-
-      {/* Spread */}
-      <div className="flex items-center justify-center py-2 border-y border-[#1f2943] my-2">
-        <span className="text-sm font-medium">
-          {orderBook.bids[0] && (
-            <span className="text-white">
-              {formatPrice(
-                (
-                  (parseFloat(orderBook.asks[0]?.price || "0") +
-                    parseFloat(orderBook.bids[0]?.price || "0")) /
-                  2
-                ).toString()
-              )}
-            </span>
-          )}
-        </span>
-        <span className="text-xs text-gray-500 ml-2">
-          Spread: {spread.value.toFixed(2)} ({spread.percentage.toFixed(3)}%)
-        </span>
+      <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="flex justify-center w-full">
+          <Button disabled={false} onClick={() => {}} type="buy">
+            BUY
+          </Button>
+        </div>
+        <div className="flex justify-center w-full">
+          <Button disabled={false} onClick={() => {}} type="sell">
+            SELL
+          </Button>
+        </div>
       </div>
-
-      {/* Bids (Buys) */}
-      <div className="space-y-[2px] mt-2">
-        {orderBook.bids.slice(0, 10).map((bid, index) => (
-          <div
-            key={`bid-${index}`}
-            className="grid grid-cols-3 text-xs px-2 py-[2px] relative"
-          >
-            <div
-              className="absolute inset-0 bg-green-500/20"
-              style={{
-                width: `${(bid.total / maxBidTotal) * 100}%`,
-                right: 0,
-                left: "auto",
-              }}
-            />
-            <span className="text-green-400 relative z-10">
-              {formatPrice(bid.price)}
-            </span>
-            <span className="text-right relative z-10">
-              {formatQuantity(bid.quantity)}
-            </span>
-            <span className="text-right relative z-10">
-              {bid.total.toFixed(2)}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
+    </>
   );
 }
