@@ -5,11 +5,19 @@ import Chart from "@/components/Chart";
 import OrderBook from "@/components/OrderBook";
 import BuyMenu from "./BuyMenu";
 
-const SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT"] as const;
+const SYMBOLS = ["BTCUSDT", "ETHUSDT"] as const;
 export type SymbolType = (typeof SYMBOLS)[number];
 
-export default function TradingDashboard() {
-  const [selectedSymbol, setSelectedSymbol] = useState<SymbolType>("BTCUSDT");
+export default function TradingDashboard({
+  ethPrice,
+  btcPrice,
+}: {
+  ethPrice: number;
+  btcPrice: number;
+}) {
+  const [selectedSymbol, setSelectedSymbol] = useState<SymbolType>("ETHUSDT");
+
+  const assetPrice: number = selectedSymbol === "ETHUSDT" ? ethPrice : btcPrice;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-8rem)]">
@@ -27,7 +35,7 @@ export default function TradingDashboard() {
           onSymbolChange={setSelectedSymbol}
         />
         <div>
-          <BuyMenu />
+          <BuyMenu selectedSymbol={selectedSymbol} assetPrice={assetPrice} />
         </div>
       </div>
     </div>
