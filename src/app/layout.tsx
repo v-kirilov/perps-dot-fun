@@ -24,7 +24,7 @@ export default function RootLayout({
           <Header />
           <div className="grid grid-cols-[16rem_1fr] min-h-[calc(100vh-64px)]">
             <SideNavigation />
-            <div className="py-1">{children}</div>
+            <div >{children}</div>
           </div>
           <Footer />
         </Providers>

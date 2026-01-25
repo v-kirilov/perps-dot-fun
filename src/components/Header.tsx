@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between px-6 py-4 bg-gray-800 text-white">
+    <header className="flex items-center justify-between px-6 py-4 bg-gray-800 text-white border-b border-gray-700">
       <div className="flex items-center gap-4">
         <Link
           href="https://github.com/v-kirilov/Blockchain/tree/main/PerpsMarket"
