@@ -1,6 +1,5 @@
 "use client";
 import {
-  ArrowsRightLeftIcon,
   CalendarDaysIcon,
   ChartBarIcon,
   HomeIcon,
@@ -25,7 +24,7 @@ const navLinks: NavLink[] = [
     icon: <HomeIcon className="h-5 w-5" />,
     requiresAuth: false,
   },
-    {
+  {
     name: "Trade",
     href: "/trade",
     icon: <ChartBarIcon className="h-5 w-5" />,
@@ -56,12 +55,12 @@ function SideNavigation(): ReactNode {
   }, []);
 
   return (
-    <nav className="border-r border-gray-700 ">
+    <nav className="border-r border-gray-700">
       <ul className="flex flex-col gap-2 h-full text-lg">
         {navLinks.map((link) => {
           // Before mount, assume disconnected (matches server render)
           const isDisabled = link.requiresAuth && (!mounted || !isConnected);
-          
+
           return (
             <li key={link.name}>
               {!isDisabled ? (
