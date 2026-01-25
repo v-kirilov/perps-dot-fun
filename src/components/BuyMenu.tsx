@@ -4,13 +4,30 @@ import { useState, useEffect } from "react";
 import Button from "./ui/Button";
 import { useAccount } from "wagmi";
 import config from "@/rainbowKitConfig";
-import { getBalance } from '@wagmi/core';
-import { formatUnits } from 'viem';
+import { getBalance } from "@wagmi/core";
+import { formatUnits } from "viem";
+import InputField from "./ui/InputField";
 
-export default function BuyMenu() {
+export default function BuyMenu({
+  selectedSymbol,
+  assetPrice,
+}: {
+  selectedSymbol: string;
+  assetPrice: number;
+}) {
   const account = useAccount();
   const [mounted, setMounted] = useState<boolean>(false);
   const [balance, setBalance] = useState<number>(0);
+  const [tradeAmount, setTradeAmount] = useState<string>("");
+
+  function setTradeAmountWithLimit(value: string) {
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue) && numericValue > balance) {
+      setTradeAmount(balance.toString());
+    } else {
+      setTradeAmount(value);
+    }
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -20,7 +37,7 @@ export default function BuyMenu() {
     async function fetchBalance() {
       if (mounted && account.address) {
         const bal = await getBalance(config, { address: account.address });
-        console.log("Balance:", bal);
+        console.log("Account:", account);
         // Use viem's formatUnits to convert BigInt to decimal string
         const formattedBalance = formatUnits(bal.value, bal.decimals);
         setBalance(parseFloat(formattedBalance));
@@ -37,6 +54,17 @@ export default function BuyMenu() {
       <div className="flex justify-between">
         <span className="m-2 text-gray-400 ">Available (ETH):</span>
         <span className="m-2 text-gray-400">{balance.toPrecision(4)}</span>
+      </div>
+      <div className="m-2">
+        <InputField
+          label={"Set Amount"}
+          placeholder={`Max ${balance.toPrecision(4)}`}
+          type="number"
+          large ={false}
+          onChange={(e) => setTradeAmountWithLimit(e.target.value)}
+          value={tradeAmount}
+          maxAmount={balance}
+        />
       </div>
       {isConnected ? (
         <div className="grid grid-cols-2 mt-2">
