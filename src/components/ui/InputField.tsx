@@ -5,6 +5,7 @@ interface InputFieldProps {
   type?: string;
   large?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  maxAmount?: number;
 }
 
 export default function InputField({
@@ -14,6 +15,7 @@ export default function InputField({
   type = "text",
   large = false,
   onChange,
+  maxAmount,
 }: InputFieldProps) {
   const baseStyles =
     "w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent";
