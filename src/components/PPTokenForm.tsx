@@ -25,8 +25,9 @@ import Button from "./ui/Button";
 import { ContractFunctionExecutionError } from "viem";
 import toast from "react-hot-toast";
 import { getDecimals, getBalance } from "@/app/lib/pptoken-service";
-import {askGPT} from "@/app/lib/aiAnalyzer-service";
+import { askGPT } from "@/app/lib/aiAnalyzer-service";
 import { generateContentFromMLDev } from "@/app/lib/gemini-service";
+import { fetchLastNCandles } from "@/app/lib/binance-service";
 
 export default function PPTokenForm() {
   const [userAddress, setUserAddress] = useState("");
@@ -34,6 +35,7 @@ export default function PPTokenForm() {
   const [isApproved, setIsApproved] = useState(true);
   const [isMinted, setIsMinted] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+  const [gptOutput, setGptOutput] = useState("");
 
   const config = useConfig();
   const account = useAccount();
@@ -59,7 +61,10 @@ export default function PPTokenForm() {
   }
 
   async function handleGeminiCall() {
-    await generateContentFromMLDev();
+    const input = await fetchLastNCandles();
+
+    const response = await askGPT(JSON.stringify(input));
+    setGptOutput(response || "No response from GPT");
   }
 
   async function handleGetBalance123() {
@@ -195,6 +200,7 @@ export default function PPTokenForm() {
           </Button>
         </div>
       </div>
+      <span>{gptOutput}</span>
     </div>
   );
 }
