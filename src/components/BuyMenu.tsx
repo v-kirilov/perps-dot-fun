@@ -55,15 +55,21 @@ export default function BuyMenu({
         <span className="m-2 text-gray-400 ">Available (ETH):</span>
         <span className="m-2 text-gray-400">{balance.toPrecision(4)}</span>
       </div>
-      <div className="m-2">
+      <div className="flex justify-between">
+        <span className="ml-2 text-gray-400 ">Set amount:</span>
+        <span className="mr-2 text-gray-400">{isNaN(parseFloat(tradeAmount)) ? `$0.00` : `$${(parseFloat(tradeAmount)*assetPrice).toPrecision(3)}`}</span>
+      </div>
+      <div className="ml-2 mr-2">
         <InputField
-          label={"Set Amount"}
+          label={""}
           placeholder={`Max ${balance.toPrecision(4)}`}
           type="number"
-          large ={false}
+          large={false}
           onChange={(e) => setTradeAmountWithLimit(e.target.value)}
           value={tradeAmount}
           maxAmount={balance}
+          minAmount={0}
+          step={parseFloat((balance * 0.1).toPrecision(2))}
         />
       </div>
       {isConnected ? (
