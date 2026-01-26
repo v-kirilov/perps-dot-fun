@@ -25,6 +25,8 @@ import Button from "./ui/Button";
 import { ContractFunctionExecutionError } from "viem";
 import toast from "react-hot-toast";
 import { getDecimals, getBalance } from "@/app/lib/pptoken-service";
+import {askGPT} from "@/app/lib/aiAnalyzer-service";
+import { generateContentFromMLDev } from "@/app/lib/gemini-service";
 
 export default function PPTokenForm() {
   const [userAddress, setUserAddress] = useState("");
@@ -54,6 +56,10 @@ export default function PPTokenForm() {
     const balance = await getBalance(config, account.address!);
     console.log("balance", balance);
     setIsMinted(true);
+  }
+
+  async function handleGeminiCall() {
+    await generateContentFromMLDev();
   }
 
   async function handleGetBalance123() {
@@ -182,7 +188,7 @@ export default function PPTokenForm() {
             disabled={
               !isMounted || !account.isConnected || !isApproved || !isMinted
             }
-            onClick={handleGetBalance}
+            onClick={handleGeminiCall}
             type="sell"
           >
             SELL

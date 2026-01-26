@@ -5,7 +5,7 @@ import Chart from "@/components/Chart";
 import OrderBook from "@/components/OrderBook";
 import BuyMenu from "./BuyMenu";
 
-const SYMBOLS = ["BTCUSDT", "ETHUSDT"] as const;
+const SYMBOLS = ["ETHUSDT"] as const;
 export type SymbolType = (typeof SYMBOLS)[number];
 
 export default function TradingDashboard({

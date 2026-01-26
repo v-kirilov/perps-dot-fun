@@ -41,4 +41,5 @@ export default function RootLayout({
 // npm install lightweight-charts
 // npm install @heroicons/react
 // npm install @supabase/supabase-js
-
+// npm install openai
+// npm install @google/genai
