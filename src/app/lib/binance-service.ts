@@ -6,9 +6,9 @@ import type {
 } from "lightweight-charts";
 
 export async function fetchLastNCandles(
-  symbol = "ETHUSDT",
   interval = "1h",
-  limit = 50
+  limit = 50,
+  symbol = "ETHUSDT"
 ): Promise<CandlestickData[]> {
   const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
   const res = await fetch(url);

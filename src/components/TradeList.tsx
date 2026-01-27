@@ -14,12 +14,12 @@ async function TradeList() {
   }
 
   return (
-    <div className="bg-[#131722] rounded-lg overflow-hidden">
+    <div className="bg-[#131722] rounded-lg overflow-hidden w-full max-w-full">
       <div className="px-4 py-3 border-b border-[#1f2943]">
         <h2 className="text-lg font-semibold text-white">Recent Trades</h2>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto w-full max-w-full">
+        <table className="w-full max-w-full">
           <thead className="bg-[#1a1f2e]">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

@@ -5,12 +5,10 @@ import TradeList from "@/components/TradeList";
 
 export default function Page() {
   return (
-    <div className="flex flex-col gap-10 mt-10 items-center">
-      <div>
-          <AccountGuard>
-            <TradeList />
-          </AccountGuard>
-      </div>
+    <div className="flex flex-col mt-10 w-full">
+      <AccountGuard>
+        <TradeList />
+      </AccountGuard>
     </div>
   );
 }
