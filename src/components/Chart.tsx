@@ -9,6 +9,7 @@ import type {
   IChartApi,
   ISeriesApi,
 } from "lightweight-charts";
+import { fetchLastNCandles } from "@/app/lib/binance-service";
 
 // ============================================
 // BINANCE API CONFIGURATION
@@ -44,22 +45,6 @@ interface BinanceWsMessage {
     c: string; // Close price
     x: boolean; // Is this kline closed?
   };
-}
-
-async function fetchHistory(
-  interval: string,
-  symbol: string,
-): Promise<CandlestickData[]> {
-  const response = await fetch(getRestUrl(interval, symbol));
-  const klines: BinanceKline[] = await response.json();
-
-  return klines.map((k) => ({
-    time: (k[0] / 1000) as UTCTimestamp,
-    open: parseFloat(k[1]),
-    high: parseFloat(k[2]),
-    low: parseFloat(k[3]),
-    close: parseFloat(k[4]),
-  }));
 }
 
 const INTERVALS = ["15m", "1h", "2h", "4h", "1d", "1w", "1M"] as const;
@@ -176,7 +161,8 @@ export default function Chart<T extends string>({
       if (isDisposed) return;
 
       console.log(`Fetching historical data for ${selectedInterval}...`);
-      const history = await fetchHistory(selectedInterval, selectedSymbol);
+      
+      const history = await fetchLastNCandles(selectedInterval,LIMIT, selectedSymbol);
 
       if (isDisposed) return;
 
