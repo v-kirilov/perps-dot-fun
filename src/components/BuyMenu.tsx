@@ -7,6 +7,8 @@ import config from "@/rainbowKitConfig";
 import { getBalance } from "@wagmi/core";
 import { formatUnits } from "viem";
 import InputField from "./ui/InputField";
+import { openPosition } from "@/app/lib/peprsMarket-service";
+import toast from "react-hot-toast";
 
 export default function BuyMenu({
   selectedSymbol,
@@ -19,6 +21,8 @@ export default function BuyMenu({
   const [mounted, setMounted] = useState<boolean>(false);
   const [balance, setBalance] = useState<number>(0);
   const [tradeAmount, setTradeAmount] = useState<string>("");
+  const [isExecutingOrder, setIsExecutingOrder] = useState<boolean>(false);
+  const [marginValue, setMarginValue] = useState<number>(1);
 
   function setTradeAmountWithLimit(value: string) {
     const numericValue = parseFloat(value);
@@ -37,7 +41,6 @@ export default function BuyMenu({
     async function fetchBalance() {
       if (mounted && account.address) {
         const bal = await getBalance(config, { address: account.address });
-        console.log("Account:", account);
         // Use viem's formatUnits to convert BigInt to decimal string
         const formattedBalance = formatUnits(bal.value, bal.decimals);
         setBalance(parseFloat(formattedBalance));
@@ -45,6 +48,25 @@ export default function BuyMenu({
     }
     fetchBalance();
   }, [mounted, account.address]);
+
+  async function handleExecutePosition(isLong: boolean) {
+    setIsExecutingOrder(true);
+
+    if (tradeAmount === "" || isNaN(parseFloat(tradeAmount))) {
+      toast.error("Invalid trade amount", { position: "top-center" });
+      setIsExecutingOrder(false);
+      return;
+    }
+    try {
+      console.log(BigInt(parseFloat(tradeAmount) * 10 ** 18));
+      await openPosition(config, parseFloat(tradeAmount), marginValue, isLong);
+    } catch (error) {
+      console.error("Error executing order:", error);
+      toast.error("Failed to execute order", { position: "top-center" });
+    } finally {
+      setIsExecutingOrder(false);
+    }
+  }
 
   // Before mount, render a neutral state that matches server render
   const isConnected = mounted && account.address;
@@ -57,7 +79,11 @@ export default function BuyMenu({
       </div>
       <div className="flex justify-between">
         <span className="ml-2 text-gray-400 ">Set amount:</span>
-        <span className="mr-2 text-gray-400">{isNaN(parseFloat(tradeAmount)) ? `$0.00` : `$${(parseFloat(tradeAmount)*assetPrice).toPrecision(3)}`}</span>
+        <span className="mr-2 text-gray-400">
+          {isNaN(parseFloat(tradeAmount))
+            ? `$0.00`
+            : `$${(parseFloat(tradeAmount) * assetPrice).toPrecision(3)}`}
+        </span>
       </div>
       <div className="ml-2 mr-2">
         <InputField
@@ -73,18 +99,43 @@ export default function BuyMenu({
         />
       </div>
       {isConnected ? (
-        <div className="grid grid-cols-2 mt-2">
-          <div className="flex justify-center w-full">
-            <Button disabled={false} onClick={() => {}} type="buy">
-              BUY
-            </Button>
+        <>
+          <div className="slidecontainer mt-4 mx-2">
+            <input
+              type="range"
+              min={1}
+              max={3}
+              step={0.1}
+              value={marginValue}
+              onChange={(e) => setMarginValue(Number(e.target.value))}
+              className="slider w-full"
+              id="myRange"
+            />
+            <div className="text-center mt-2 text-gray-400">
+              Margin: {marginValue.toFixed(1)}X
+            </div>
           </div>
-          <div className="flex justify-center w-full">
-            <Button disabled={false} onClick={() => {}} type="sell">
-              SELL
-            </Button>
+          <div className="grid grid-cols-2 mt-2">
+            <div className="flex justify-center w-full">
+              <Button
+                disabled={isExecutingOrder}
+                onClick={() => handleExecutePosition(true)}
+                type="buy"
+              >
+                BUY
+              </Button>
+            </div>
+            <div className="flex justify-center w-full">
+              <Button
+                disabled={isExecutingOrder}
+                onClick={() => handleExecutePosition(false)}
+                type="sell"
+              >
+                SELL
+              </Button>
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         <div className="m-2 text-white-500 text-2xl flex justify-center">
           Please connect your wallet to trade.
