@@ -139,3 +139,28 @@ export async function getMinPositionAmount(config: Config): Promise<number> {
   });
   return Number(response);
 }
+
+export async function openPosition(
+  config: Config,
+  amount: number,
+  margin: number,
+  isLong: boolean,
+) {
+  if (!PERPS_MARKET_ADDRESS) {
+    alert("Contract not deployed yet");
+    return 0;
+  }
+
+  console.log("Opening position with params:", { amount, margin, isLong });
+  const tradedValue = BigInt(amount * 10 ** 18 * margin);
+  const ethValue = BigInt(amount * 10 ** 18);
+  const response = await writeContract(config, {
+    abi: PERPS_MARKET_ABI,
+    address: PERPS_MARKET_ADDRESS as `0x${string}`,
+    functionName: "openPosition",
+    args: [tradedValue, isLong],
+    value: ethValue, // assuming amount is in ETH and converting to wei
+  });
+  console.log("Transaction hash:", response);
+  //return Number(response);
+}
