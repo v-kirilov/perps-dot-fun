@@ -164,3 +164,20 @@ export async function openPosition(
   console.log("Transaction hash:", response);
   //return Number(response);
 }
+
+export async function checkIfCampaignIsActive(
+  config: Config,
+
+) {
+  if (!PERPS_MARKET_ADDRESS) {
+    alert("Contract not deployed yet");
+    return 0;
+  }
+
+  const response = await readContract(config, {
+    abi: PERPS_MARKET_ABI,
+    address: PERPS_MARKET_ADDRESS as `0x${string}`,
+    functionName: "checkIfCampaignActive",
+  });
+  console.log("Transaction hash:", response);
+}

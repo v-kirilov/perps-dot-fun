@@ -28,6 +28,7 @@ import { getDecimals, getBalance } from "@/app/lib/pptoken-service";
 import { askGPT } from "@/app/lib/aiAnalyzer-service";
 import { generateContentFromMLDev } from "@/app/lib/gemini-service";
 import { fetchLastNCandles } from "@/app/lib/binance-service";
+import { checkIfCampaignIsActive } from "@/app/lib/peprsMarket-service";
 
 export default function PPTokenForm() {
   const [userAddress, setUserAddress] = useState("");
@@ -50,6 +51,10 @@ export default function PPTokenForm() {
     console.log("Accoutn", account);
     const decimals = await getDecimals(config);
     console.log("decimals", decimals);
+  }
+
+    async function handleCheckCampaign() {
+    await checkIfCampaignIsActive(config);
   }
 
   async function handleGetBalance() {
@@ -182,10 +187,10 @@ export default function PPTokenForm() {
             disabled={
               !isMounted || !account.isConnected || !isApproved || !isMinted
             }
-            onClick={handleGetBalance}
+            onClick={handleCheckCampaign}
             type="buy"
           >
-            BUY
+            Check Campaign
           </Button>
         </div>
         <div className="justify-center">
