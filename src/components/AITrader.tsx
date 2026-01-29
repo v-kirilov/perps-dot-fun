@@ -74,48 +74,82 @@ export default function AITrader() {
   }
 
   return (
-    <>
-      <div className="border-2 border-gray-700 rounded-lg px-4 py-2 gap-4 m-5">
-        <div className="flex items-center justify-center h-full mb-4">
-          <span className="text-center">
-            The AITrader component provides a user interface for selecting a model,
-            timeframe and history interval, allowing users to customize
-            parameters for AI-powered trading analysis or actions.
-          </span>
+    <div className="relative max-w-2xl mx-auto my-12 px-6">
+      {/* Animated background elements */}
+      <div className="absolute -top-24 -right-24 w-72 h-72 bg-green-500/10 rounded-full blur-3xl animate-pulse z-0" />
+      <div className="absolute top-40 -left-24 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000 z-0" />
+      <div className="absolute bottom-10 right-10 w-56 h-56 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-500 z-0" />
+
+      {/* Glassmorphism card */}
+      <div className="relative z-10 bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl shadow-lg shadow-green-500/10 p-8 md:p-12">
+        {/* Header */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25 mb-4">
+            <svg
+              className="w-10 h-10 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              />
+            </svg>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+            AI Trading Assistant
+          </h2>
+          <p className="text-gray-400 text-center max-w-lg">
+            Get instant AI-powered trading analysis. Select your model, timeframe, and history, then let the AI analyze the market for you.
+          </p>
         </div>
 
-        <div className="flex items-center justify-center">
-          <span className="mr-2">Select model:</span>
-          <DropDownButton
-            options={MODEL}
-            selectedOption={selectedModel}
-            onOptionChange={setSelectedModel}
-          />
-          <span className="mr-2">Select timeframe:</span>
-          <DropDownButton
-            options={INTERVALS}
-            selectedOption={selectedInterval}
-            onOptionChange={setSelectedInterval}
-          />
-          <span className="mr-2">Select history:</span>
-
-          <DropDownButton
-            options={HISTORY}
-            selectedOption={selectedHistory}
-            onOptionChange={setSelectedHistory}
-          />
+        {/* Controls */}
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
+          <div className="flex flex-col items-center">
+            <span className="text-xs text-gray-400 mb-1">Model</span>
+            <DropDownButton
+              options={MODEL}
+              selectedOption={selectedModel}
+              onOptionChange={setSelectedModel}
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-xs text-gray-400 mb-1">Timeframe</span>
+            <DropDownButton
+              options={INTERVALS}
+              selectedOption={selectedInterval}
+              onOptionChange={setSelectedInterval}
+            />
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-xs text-gray-400 mb-1">History</span>
+            <DropDownButton
+              options={HISTORY}
+              selectedOption={selectedHistory}
+              onOptionChange={setSelectedHistory}
+            />
+          </div>
         </div>
-        <div className="mt-4 flex flex-col gap-4">
+
+        {/* Ask AI Button */}
+        <div className="flex justify-center mb-6">
           <Button
             onClick={handleGeminiCall}
             type="big"
             disabled={!isMounted || isLoadingAIResponse}
+            className="group relative px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-semibold text-white text-lg shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all duration-300 hover:scale-105"
           >
             {getButtonContent()}
           </Button>
         </div>
-        <div className="mt-4 font-sans text-sm"     dangerouslySetInnerHTML={{ __html: formatAIOutput(aiOutput) }} />
+
+        {/* AI Output */}
+        <div className="mt-4 font-sans text-base text-gray-200 min-h-[60px] border border-white/10 rounded-xl bg-black/20 p-4" dangerouslySetInnerHTML={{ __html: formatAIOutput(aiOutput) }} />
       </div>
-    </>
+    </div>
   );
 }
