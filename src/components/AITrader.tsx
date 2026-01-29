@@ -9,7 +9,7 @@ import { CgSpinner } from "react-icons/cg";
 
 const INTERVALS = ["15m", "1h", "2h", "4h", "1d", "1w", "1M"] as const;
 const HISTORY = ["10", "20", "50", "100"] as const;
-const MODEL = ["gpt-5-nano", "gpt-4.1-nano", "gpt-4o-mini"] as const;
+const MODEL = ["gpt-5.2", "gpt-5-nano", "gpt-4.1-nano", "gpt-4o-mini"] as const;
 type IntervalType = (typeof INTERVALS)[number];
 type HistoryType = (typeof HISTORY)[number];
 type ModelType = (typeof MODEL)[number];
@@ -17,7 +17,7 @@ type ModelType = (typeof MODEL)[number];
 export default function AITrader() {
   const [selectedInterval, setSelectedInterval] = useState<IntervalType>("1h");
   const [selectedHistory, setSelectedHistory] = useState<HistoryType>("10");
-  const [selectedModel, setSelectedModel] = useState<ModelType>("gpt-5-nano");
+  const [selectedModel, setSelectedModel] = useState<ModelType>("gpt-5.2");
   const [isMounted, setIsMounted] = useState(false);
   const [aiOutput, setAiOutput] = useState("");
   const [isLoadingAIResponse, setIsLoadingAIResponse] = useState(false);
