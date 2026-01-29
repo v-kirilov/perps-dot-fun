@@ -74,14 +74,14 @@ export default function AITrader() {
   }
 
   return (
-    <div className="relative max-w-2xl mx-auto my-12 px-6">
+    <div className="relative max-w-6xl mx-auto my-12 px-6">
       {/* Animated background elements */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-green-500/10 rounded-full blur-3xl animate-pulse z-0" />
       <div className="absolute top-40 -left-24 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000 z-0" />
       <div className="absolute bottom-10 right-10 w-56 h-56 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-500 z-0" />
 
       {/* Glassmorphism card */}
-      <div className="relative z-10 bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl shadow-lg shadow-green-500/10 p-8 md:p-12">
+      <div className="relative z-10 bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl shadow-lg shadow-green-500/10 p-8 md:p-16">
         {/* Header */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25 mb-4">
