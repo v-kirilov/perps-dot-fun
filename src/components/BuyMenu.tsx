@@ -9,6 +9,7 @@ import { formatUnits } from "viem";
 import InputField from "./ui/InputField";
 import { openPosition } from "@/app/lib/peprsMarket-service";
 import toast from "react-hot-toast";
+import { getOrCreateUser, openTrade } from "@/app/lib/data-service";
 
 export default function BuyMenu({
   selectedSymbol,
@@ -40,6 +41,17 @@ export default function BuyMenu({
   useEffect(() => {
     async function fetchBalance() {
       if (mounted && account.address) {
+        try {
+          if (account.address) {
+            const supabaseUser = await getOrCreateUser(
+              account.address as `0x${string}`,
+            );
+            console.log("Supabase user data:", supabaseUser);
+          }
+        } catch (error) {
+          toast.error("Failed to fetch or create user data", { position: "top-center" });
+        }
+
         const bal = await getBalance(config, { address: account.address });
         // Use viem's formatUnits to convert BigInt to decimal string
         const formattedBalance = formatUnits(bal.value, bal.decimals);
@@ -60,6 +72,13 @@ export default function BuyMenu({
     try {
       console.log(BigInt(parseFloat(tradeAmount) * 10 ** 18));
       await openPosition(config, parseFloat(tradeAmount), marginValue, isLong);
+
+      // save the trade in supabase
+      await openTrade(
+        account.address as `0x${string}`,
+        parseFloat((parseFloat(tradeAmount) * assetPrice).toPrecision(3)),
+        new Date(),
+      );
     } catch (error) {
       console.error("Error executing order:", error);
       toast.error("Failed to execute order", { position: "top-center" });
