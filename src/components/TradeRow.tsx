@@ -1,4 +1,6 @@
+"use client";
 import { Trade } from "@/app/lib/data-service";
+import Button from "./ui/Button";
 
 interface TradeRowProps {
   trade: Trade;
@@ -56,6 +58,11 @@ export default function TradeRow({ trade }: TradeRowProps) {
         >
           {trade.isOpen ? "Open" : "Closed"}
         </span>
+      </td>
+          <td className="px-4 py-3 text-sm text-center">
+       <Button type="small" onClick={() => {}} disabled={!trade.isOpen}>
+        {trade.isOpen ? "Close" : "Closed"}
+       </Button>
       </td>
     </tr>
   );
