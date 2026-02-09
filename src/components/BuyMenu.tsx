@@ -81,12 +81,16 @@ export default function BuyMenu({
         traderId,
         parseFloat((parseFloat(tradeAmount) * assetPrice).toPrecision(3)),
         new Date(),
+        marginValue,
+        parseFloat(tradeAmount),
       );
     } catch (error) {
       console.error("Error executing order:", error);
       toast.error("Failed to execute order", { position: "top-center" });
     } finally {
       setIsExecutingOrder(false);
+      setTradeAmount("");
+      setMarginValue(1);
     }
   }
 
