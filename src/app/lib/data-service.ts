@@ -15,7 +15,7 @@ export interface Trade {
   created_at: Date;
   closed_at?: Date;
   id?: string;
-  trader_id: string;
+  trader_id: number;
   amount: number;
   isOpen: boolean;
   profit: number;
@@ -121,7 +121,7 @@ export async function getOrCreateUser(wallet: string) {
   return createdUser;
 }
 
-export async function openTrade(trader_id: string, amount: number, openedDate:Date) {
+export async function openTrade(trader_id: number, amount: number, openedDate:Date) {
   console.log(
     "Opening trade for trader_id:",
     trader_id,
