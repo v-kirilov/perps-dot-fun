@@ -24,6 +24,7 @@ export default function BuyMenu({
   const [tradeAmount, setTradeAmount] = useState<string>("");
   const [isExecutingOrder, setIsExecutingOrder] = useState<boolean>(false);
   const [marginValue, setMarginValue] = useState<number>(1);
+  const [traderId, setTraderId] = useState<number>(0);
 
   function setTradeAmountWithLimit(value: string) {
     const numericValue = parseFloat(value);
@@ -46,10 +47,12 @@ export default function BuyMenu({
             const supabaseUser = await getOrCreateUser(
               account.address as `0x${string}`,
             );
-            console.log("Supabase user data:", supabaseUser);
+            setTraderId(supabaseUser.id);
           }
         } catch (error) {
-          toast.error("Failed to fetch or create user data", { position: "top-center" });
+          toast.error("Failed to fetch or create user data", {
+            position: "top-center",
+          });
         }
 
         const bal = await getBalance(config, { address: account.address });
@@ -75,7 +78,7 @@ export default function BuyMenu({
 
       // save the trade in supabase
       await openTrade(
-        account.address as `0x${string}`,
+        traderId,
         parseFloat((parseFloat(tradeAmount) * assetPrice).toPrecision(3)),
         new Date(),
       );
