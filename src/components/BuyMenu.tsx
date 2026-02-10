@@ -14,9 +14,11 @@ import { getOrCreateUser, openTrade } from "@/app/lib/data-service";
 export default function BuyMenu({
   selectedSymbol,
   assetPrice,
+  onTradeCreated,
 }: {
   selectedSymbol: string;
   assetPrice: number;
+  onTradeCreated?: () => void;
 }) {
   const account = useAccount();
   const [mounted, setMounted] = useState<boolean>(false);
@@ -84,6 +86,9 @@ export default function BuyMenu({
         marginValue,
         parseFloat(tradeAmount),
       );
+      
+      // Notify parent component that a new trade was created
+      onTradeCreated?.();
     } catch (error) {
       console.error("Error executing order:", error);
       toast.error("Failed to execute order", { position: "top-center" });
