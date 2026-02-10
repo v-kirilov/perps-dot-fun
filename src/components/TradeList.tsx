@@ -44,7 +44,7 @@ function TradeList({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
       <div className="px-4 py-3 border-b border-[#1f2943]">
         <h2 className="text-lg font-semibold text-white">Recent Trades</h2>
       </div>
-      <div className="overflow-x-auto w-full max-w-full">
+      <div className="overflow-x-auto overflow-y-auto w-full max-w-full max-h-[40vh]">
         <table className="w-full max-w-full">
           <thead className="bg-[#1a1f2e]">
             <tr>
