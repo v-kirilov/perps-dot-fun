@@ -10,14 +10,14 @@ export type SymbolType = (typeof SYMBOLS)[number];
 
 export default function TradingDashboard({
   ethPrice,
-  btcPrice,
+  onTradeCreated,
 }: {
   ethPrice: number;
-  btcPrice: number;
+  onTradeCreated?: () => void;
 }) {
   const [selectedSymbol, setSelectedSymbol] = useState<SymbolType>("ETHUSDT");
 
-  const assetPrice: number = selectedSymbol === "ETHUSDT" ? ethPrice : btcPrice;
+  const assetPrice: number = selectedSymbol === "ETHUSDT" ? ethPrice : 0;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-8rem)]">
@@ -35,7 +35,11 @@ export default function TradingDashboard({
           onSymbolChange={setSelectedSymbol}
         />
         <div>
-          <BuyMenu selectedSymbol={selectedSymbol} assetPrice={assetPrice} />
+          <BuyMenu 
+            selectedSymbol={selectedSymbol} 
+            assetPrice={assetPrice} 
+            onTradeCreated={onTradeCreated}
+          />
         </div>
       </div>
     </div>
