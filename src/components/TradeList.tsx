@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Trade, getTrades } from "../app/lib/data-service";
 import TradeRow from "./TradeRow";
 
-function TradeList() {
+function TradeList({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,7 +21,7 @@ function TradeList() {
 
   useEffect(() => {
     fetchTrades();
-  }, []);
+  }, [refreshTrigger]);
 
   if (isLoading) {
     return (
