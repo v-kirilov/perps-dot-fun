@@ -15,9 +15,9 @@ export default function AccountGuard({
   const account = useAccount();
   if (!account.address) {
     return (
-      <div className="flex items-center justify-center py-10">
-        <span> Please Connect Your Wallet </span>
-      </div>
+      <h1 className="text-xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed text-center">
+        Please connect your wallet!
+      </h1>
     );
   }
 
