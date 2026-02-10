@@ -1,8 +1,10 @@
 "use client";
 import {
+  ArrowsPointingInIcon,
   CalendarDaysIcon,
   ChartBarIcon,
   HomeIcon,
+  SparklesIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -28,6 +30,12 @@ const navLinks: NavLink[] = [
     name: "Trade",
     href: "/trade",
     icon: <ChartBarIcon className="h-5 w-5" />,
+    requiresAuth: false,
+  },
+    {
+    name: "AI Trader",
+    href: "/ai-trader",
+    icon: <SparklesIcon className="h-5 w-5" />,
     requiresAuth: false,
   },
   {
