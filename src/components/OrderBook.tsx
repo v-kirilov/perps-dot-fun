@@ -7,7 +7,7 @@ import Button from "./ui/Button";
 // BINANCE ORDER BOOK CONFIGURATION
 // ============================================
 
-const DEPTH_LIMIT = 20; // Number of price levels to show
+const DEPTH_LIMIT = 6; // Number of price levels to show
 
 const getRestUrl = (symbol: string) =>
   `https://api.binance.com/api/v3/depth?symbol=${symbol}&limit=${DEPTH_LIMIT}`;
