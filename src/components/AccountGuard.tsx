@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccount } from "wagmi";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface AccountGuardProps {
   children: ReactNode;
@@ -13,23 +13,26 @@ export default function AccountGuard({
   fallback,
 }: AccountGuardProps) {
   const account = useAccount();
-  if (!account.address) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Prevent hydration mismatch by not rendering content until mounted
+  if (!isMounted) {
     return (
-      <h1 className="text-xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed text-center">
-        Please connect your wallet!
-      </h1>
+      <div className="text-xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed text-center">
+        Loading...
+      </div>
     );
   }
 
   if (!account.address) {
     return (
-      <>
-        {fallback || (
-          <h2 className="text-3xl font-semibold text-center">
-            Sign in to access your profile information.
-          </h2>
-        )}
-      </>
+      <div className="text-xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed text-center">
+        Please connect your wallet!
+      </div>
     );
   }
 
