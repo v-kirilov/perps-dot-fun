@@ -173,8 +173,12 @@ export default function OrderBook<T extends string>({
         reconnectTimeout = setTimeout(connectWebSocket, 1000);
       };
 
-      ws.onerror = (error) =>
-        console.error("OrderBook WebSocket error:", error);
+      ws.onerror = (error) => {
+        // Suppress error logging if component is disposed
+        if (!isDisposed) {
+          console.error("OrderBook WebSocket error:", error);
+        }
+      };
     }
 
     async function init() {
