@@ -33,7 +33,7 @@ export default function Page() {
       </div>
       <div className="px-10 py-5">
         <AccountGuard>
-          <TradeList refreshTrigger={refreshTrigger} />
+          <TradeList refreshTrigger={refreshTrigger} isTradeWindow={true} />
         </AccountGuard>
       </div>
     </>
