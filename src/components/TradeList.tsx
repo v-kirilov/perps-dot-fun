@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Trade, getTrades } from "../app/lib/data-service";
 import TradeRow from "./TradeRow";
 
-function TradeList({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
+function TradeList({ refreshTrigger = 0, isTradeWindow = false }: { refreshTrigger?: number, isTradeWindow?: boolean }) {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -44,7 +44,7 @@ function TradeList({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
       <div className="px-4 py-3 border-b border-[#1f2943]">
         <h2 className="text-lg font-semibold text-white">Recent Trades</h2>
       </div>
-      <div className="overflow-x-auto overflow-y-auto w-full max-w-full max-h-[40vh]">
+      <div className={`overflow-x-auto overflow-y-auto w-full max-w-full ${isTradeWindow ? "max-h-[40vh]" : ""}`}>
         <table className="w-full max-w-full">
           <thead className="bg-[#1a1f2e]">
             <tr>
