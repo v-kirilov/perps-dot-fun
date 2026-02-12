@@ -154,7 +154,12 @@ export default function Chart<T extends string>({
         reconnectTimeout = setTimeout(connectWebSocket, 1000);
       };
 
-      ws.onerror = (error) => console.error("WebSocket error:", error);
+      ws.onerror = (error) => {
+        // Suppress error logging if component is disposed or not mounted
+        if (!isDisposed && chartRef.current) {
+          console.error("WebSocket error:", error);
+        }
+      };
     }
 
     async function init() {
