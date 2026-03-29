@@ -30,3 +30,15 @@ export async function fetchLastNCandles(
     close: parseFloat(k[4]),
   }));
 }
+
+export async function fetch24hStats() {
+  try {
+    const response = await fetch(
+      "https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT",
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching 24h stats:", error);
+  }
+}
