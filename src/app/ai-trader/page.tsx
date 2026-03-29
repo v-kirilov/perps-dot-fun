@@ -16,7 +16,7 @@ export default function Page() {
           </div>
 
           {/* Main Title */}
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 pb-1 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
             AI Trading Advisor
           </h1>
           
