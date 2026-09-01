@@ -67,7 +67,10 @@ export default function Watchlist() {
           <h2 className="text-sm font-bold uppercase tracking-[0.22em] text-slate-400">
             Watchlist
           </h2>
-          <span className="text-xs text-slate-500">Live Binance prices</span>
+          <span className="flex items-center gap-2 text-xs text-slate-500">
+            <span className="animate-pulse-ring h-1.5 w-1.5 rounded-full bg-emerald-300" />
+            Live Binance prices
+          </span>
         </div>
         <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 md:grid-cols-3">
           {markets.map((market) => (

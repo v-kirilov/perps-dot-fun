@@ -52,13 +52,13 @@ export default function MarketSystemSection() {
           {capabilities.map((capability, index) => (
             <article
               key={capability.title}
-              className="border border-white/10 bg-white/[0.035] p-6 transition hover:border-white/24 hover:bg-white/[0.055]"
+              className="group border border-white/10 bg-white/[0.035] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300/30 hover:bg-white/[0.055] hover:shadow-[0_20px_50px_-24px_rgba(16,185,129,0.35)]"
             >
               <div className="mb-8 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 transition-colors group-hover:text-slate-400">
                   {capability.eyebrow}
                 </span>
-                <span className="font-mono text-sm text-slate-600">
+                <span className="font-mono text-sm text-slate-600 transition-colors group-hover:text-emerald-300">
                   0{index + 1}
                 </span>
               </div>

@@ -70,7 +70,7 @@ function ArrowRightIcon() {
 
 function StatStrip() {
   return (
-    <div className="grid grid-cols-[repeat(4,minmax(12rem,1fr))] overflow-x-auto border border-white/10 bg-black/25">
+    <div className="animate-fade-up grid grid-cols-[repeat(4,minmax(12rem,1fr))] overflow-x-auto border border-white/10 bg-black/25 [animation-delay:360ms]">
       {stats.map((stat, index) => (
         <div
           key={stat.label}
@@ -103,10 +103,15 @@ function PricePath() {
           style={{ height: `${height}%` }}
         >
           <span
-            className={`w-full max-w-5 ${
-              index > 8 ? "bg-emerald-300" : "bg-slate-600"
+            className={`animate-grow-bar w-full max-w-5 ${
+              index > 8
+                ? "bg-emerald-300 shadow-[0_0_12px_rgba(110,231,183,0.35)]"
+                : "bg-slate-600"
             }`}
-            style={{ height: `${Math.max(24, height)}%` }}
+            style={{
+              height: `${Math.max(24, height)}%`,
+              animationDelay: `${index * 55}ms`,
+            }}
           />
         </div>
       ))}
@@ -172,9 +177,9 @@ function MarginPreview() {
 
 function MarketTerminal() {
   return (
-    <div className="relative">
+    <div className="animate-fade-up relative [animation-delay:320ms]">
       <div className="absolute -left-3 top-8 hidden h-24 w-px bg-amber-300/70 lg:block" />
-      <div className="border border-white/12 bg-[#0d1218]/95 shadow-2xl shadow-black/40">
+      <div className="border border-white/12 bg-[#0d1218]/95 shadow-2xl shadow-black/40 transition-shadow duration-500 hover:shadow-[0_25px_80px_-20px_rgba(16,185,129,0.25)]">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-white/[0.03] px-5 py-4">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
@@ -219,7 +224,7 @@ function MarketTerminal() {
 
 export default function HeroSection() {
   return (
-    <section className="relative border-b border-white/10">
+    <section className="relative overflow-hidden border-b border-white/10">
       <div
         className="absolute inset-0 opacity-[0.08]"
         style={{
@@ -228,37 +233,42 @@ export default function HeroSection() {
           backgroundSize: "44px 44px",
         }}
       />
+      {/* Ambient bloom for depth */}
+      <div className="animate-bloom pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-emerald-400/20 blur-[120px]" />
+      <div className="animate-bloom pointer-events-none absolute -right-16 top-1/3 h-96 w-96 rounded-full bg-cyan-400/15 blur-[130px] [animation-delay:3s]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/60 to-transparent" />
 
       <div className="relative mx-auto grid max-w-7xl gap-10 px-5 py-10 md:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:py-14">
         <div className="flex min-h-[620px] flex-col justify-between gap-10">
           <div>
-            <div className="mb-8 inline-flex items-center gap-3 border border-white/12 bg-white/[0.04] px-3 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
-              <span className="h-2 w-2 bg-emerald-300" />
+            <div className="animate-fade-up mb-8 inline-flex items-center gap-3 border border-white/12 bg-white/[0.04] px-3 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
+              <span className="animate-pulse-ring h-2 w-2 rounded-full bg-emerald-300" />
               Ethereum perpetual desk
             </div>
 
-            <h1 className="max-w-3xl text-5xl font-black leading-[0.93] tracking-normal text-white md:text-7xl xl:text-8xl">
+            <h1 className="animate-fade-up max-w-3xl text-5xl font-black leading-[0.93] tracking-normal text-white [animation-delay:80ms] md:text-7xl xl:text-8xl">
               Perps that feel like a terminal, not a template.
             </h1>
 
-            <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300">
+            <p className="animate-fade-up mt-7 max-w-xl text-lg leading-8 text-slate-300 [animation-delay:160ms]">
               Perps.FUN is a non-custodial perpetual exchange for traders who
               want a clean market surface, fast intent, and on-chain settlement
               without the casino gloss.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="animate-fade-up mt-9 flex flex-col gap-3 [animation-delay:240ms] sm:flex-row">
               <Link
                 href="/trade"
-                className="inline-flex h-12 items-center justify-center gap-2 bg-emerald-300 px-6 text-sm font-bold text-[#07110d] transition hover:bg-emerald-200"
+                className="group inline-flex h-12 items-center justify-center gap-2 bg-emerald-300 px-6 text-sm font-bold text-[#07110d] shadow-[0_0_0_rgba(110,231,183,0)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-[0_10px_30px_-8px_rgba(110,231,183,0.6)]"
               >
                 Open trading desk
-                <ArrowRightIcon />
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  <ArrowRightIcon />
+                </span>
               </Link>
               <a
                 href="#market-system"
-                className="inline-flex h-12 items-center justify-center border border-white/14 px-6 text-sm font-semibold text-slate-200 transition hover:border-white/30 hover:bg-white/[0.04]"
+                className="inline-flex h-12 items-center justify-center border border-white/14 px-6 text-sm font-semibold text-slate-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/[0.04]"
               >
                 See the system
               </a>
